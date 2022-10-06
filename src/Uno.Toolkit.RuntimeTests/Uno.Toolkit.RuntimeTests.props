@@ -1,0 +1,47 @@
+<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+
+	<!--
+		Condition="'$(FrameworkLineage)' == 'UWP'"
+		Condition="'$(FrameworkLineage)' == 'WinUI'"
+	-->
+
+	<PropertyGroup>
+		<!-- We are not building any target in UnoTargetFrameworkOverride, but only those that are supported and in the appropriate linage -->
+		<!-- condition: add target if no override or the target is defined in override -->
+		<TargetFrameworks Condition="'$(UnoTargetFrameworkOverride)'=='' OR $(UnoTargetFrameworkOverride.Contains('netstandard2.0'))">$(TargetFrameworks);netstandard2.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoTargetFrameworkOverride)'=='' OR $(UnoTargetFrameworkOverride.Contains('xamarinios10'))">$(TargetFrameworks);xamarinios10</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoTargetFrameworkOverride)'=='' OR $(UnoTargetFrameworkOverride.Contains('xamarinmac20'))">$(TargetFrameworks);xamarinmac20</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoTargetFrameworkOverride)'=='' OR $(UnoTargetFrameworkOverride.Contains('MonoAndroid11.0'))">$(TargetFrameworks);MonoAndroid11.0</TargetFrameworks>
+		<!-- condition: in addition to the above condition, we ALSO check if the right FrameworkLineage is given -->
+		<TargetFrameworks Condition="'$(FrameworkLineage)' == 'UWP' AND ('$(UnoTargetFrameworkOverride)'=='' OR $(UnoTargetFrameworkOverride.Contains('uap10.0.18362')))">$(TargetFrameworks);uap10.0.18362</TargetFrameworks>
+		<TargetFrameworks Condition="'$(FrameworkLineage)' == 'WINUI' AND ('$(UnoTargetFrameworkOverride)'=='' OR $(UnoTargetFrameworkOverride.Contains('net5.0-windows10.0.18362')))">$(TargetFrameworks);net5.0-windows10.0.18362</TargetFrameworks>
+
+		<AssemblyName>Uno.Toolkit.RuntimeTests</AssemblyName>
+		<RootNamespace>Uno.Toolkit.RuntimeTests</RootNamespace>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+
+		<!-- Required by Uno.UI.RuntimeTests.Engine -->
+		<DefineConstants>$(DefineConstants);UNO_RUNTIMETESTS_DISABLE_INJECTEDPOINTERATTRIBUTE</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_RUNTIMETESTS_DISABLE_REQUIRESFULLWINDOWATTRIBUTE</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_RUNTIMETESTS_DISABLE_RUNSONUITHREADATTRIBUTE</DefineConstants>
+
+		<DefineConstants Condition="'$(FrameworkLineage)' == 'UWP'">$(DefineConstants);IS_UWP</DefineConstants>
+		<DefineConstants Condition="'$(FrameworkLineage)' == 'WinUI'">$(DefineConstants);IS_WINUI</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Toolkit.UI\Uno.Toolkit.UI.csproj" Condition="'$(FrameworkLineage)' == 'UWP'" />
+		<ProjectReference Include="..\Uno.Toolkit.UI\Uno.Toolkit.WinUI.csproj" Condition="'$(FrameworkLineage)' == 'WinUI'" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.UI.Xaml" Version="2.6.0" Condition="'$(TargetFramework)'=='uap10.0.18362'" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.0" Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362'" />
+
+		<PackageReference Include="Uno.UI" Version="4.5.9" Condition="'$(FrameworkLineage)' == 'UWP'" />
+		<PackageReference Include="Uno.WinUI" Version="4.5.9" Condition="'$(FrameworkLineage)' == 'WinUI'" />
+	</ItemGroup>
+
+</Project>

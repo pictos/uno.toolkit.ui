@@ -50,6 +50,7 @@
 		<PackageReference Include="Uno.Material" Version="2.3.0" />
 		<PackageReference Include="Uno.UI.WebAssembly" Version="4.5.9" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="4.5.9" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.1.0-dev.20" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="4.0.0-dev.174" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="4.0.0-dev.174" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.1" />
